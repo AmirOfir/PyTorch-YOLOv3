@@ -50,6 +50,10 @@ if __name__ == "__main__":
         # Load checkpoint weights
         model.load_state_dict(torch.load(opt.weights_path))
 
+    # model.module_list.__delitem__(21)
+    # model.module_list[21] = nn.MaxPool2d(3)
+    
+
     model.eval()  # Set in evaluation mode
 
     dataloader = DataLoader(
@@ -71,9 +75,14 @@ if __name__ == "__main__":
     for batch_i, (img_paths, input_imgs) in enumerate(dataloader):
         # Configure input
         input_imgs = Variable(input_imgs.type(Tensor))
+        #print(input_imgs.shape); exit();
 
         # Get detections
         with torch.no_grad():
+            # c = input_imgs
+            # for j in range(len(model.module_list)):
+            #     print(j, c.shape)
+            #     c = model.module_list[j](c)
             detections = model(input_imgs)
             detections = non_max_suppression(detections, opt.conf_thres, opt.nms_thres)
 

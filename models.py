@@ -20,6 +20,7 @@ def create_modules(module_defs):
     hyperparams = module_defs.pop(0)
     output_filters = [int(hyperparams["channels"])]
     module_list = nn.ModuleList()
+    
     for module_i, module_def in enumerate(module_defs):
         modules = nn.Sequential()
 
@@ -28,6 +29,7 @@ def create_modules(module_defs):
             filters = int(module_def["filters"])
             kernel_size = int(module_def["size"])
             pad = (kernel_size - 1) // 2
+            
             modules.add_module(
                 f"conv_{module_i}",
                 nn.Conv2d(
@@ -248,6 +250,7 @@ class Darknet(nn.Module):
         loss = 0
         layer_outputs, yolo_outputs = [], []
         for i, (module_def, module) in enumerate(zip(self.module_defs, self.module_list)):
+            print(i, x.shape)
             if module_def["type"] in ["convolutional", "upsample", "maxpool"]:
                 x = module(x)
             elif module_def["type"] == "route":
